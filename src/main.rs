@@ -18,10 +18,10 @@ impl<'a> DietPlan<'a> {
     }
 
     fn total(&self) -> Macros {
-        let mut result = Macros::default();
-        for meal in &self.meals {
-            result.add(&meal.totals());
-        }
+        let result = self.meals.iter().fold(Macros::default(), |mut aggregate, item| {
+            aggregate.add(&item.totals());
+            aggregate
+        });
         result
     }
 
