@@ -1,91 +1,37 @@
-struct DietPlan<'a> {
-    target: Macros,
-    meals: Vec<&'a Meal>
+mod types;
 
+use clap::{Args, Parser, Subcommand};
+
+
+#[derive(Debug, Parser)]
+struct CLI {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Debug, Subcommand)]
+enum Commands {
+    #[command(arg_required_else_help = true)]
+    Add(AddArgs),
 }
 
 
-impl<'a> DietPlan<'a> {
-    fn new(protein: f32, carbs: f32, fats: f32) -> DietPlan<'a> {
-        DietPlan {
-            meals: Vec::new(),
-            target:  Macros {
-                protein: protein,
-                carbs: carbs,
-                fats
-            }
-        }
-    }
-
-    fn total(&self) -> Macros {
-        let result = self.meals.iter().fold(Macros::default(), |mut aggregate, item| {
-            aggregate.add(&item.totals());
-            aggregate
-        });
-        result
-    }
-
-    fn add(&mut self, meal: &'a Meal) {
-        self.meals.push(meal);
-    }
+#[derive(Args, Debug)]
+#[command(args_conflicts_with_subcommands = true)]
+struct AddArgs {
+    #[arg(short, long)]
+     meal: Option<String>
 }
-
-#[derive(Default)]
-struct Meal {
-    name: String,
-    macros: Macros,
-    weight: f32
-}
-
-impl Meal {
-    fn totals(&self) -> Macros {
-        let multiplier = self.weight / 100.0;
-        Macros {
-            protein: self.macros.protein * multiplier,
-            carbs: self.macros.carbs * multiplier,
-            fats: self.macros.fats * multiplier
-        }
-    }
-}
-
-impl Meal {
-    fn add(mut self, rhs: &Meal) {
-        self.macros.add(&rhs.macros);
-    }
-}
-
-#[derive(Default)]
-struct Macros {
-    protein: f32,
-    carbs: f32,
-    fats: f32
-}
-
-impl Macros {
-    fn add(&mut self, rhs: &Macros) {
-        self.protein = self.protein + rhs.protein;
-        self.carbs = self.carbs + rhs.carbs;
-        self.fats = self.fats + rhs.fats;
-    }
-}
-
-impl PartialEq for Macros {
-    fn eq(&self, other: &Macros) -> bool {
-        self.protein == other.protein &&
-        self.carbs == other.carbs &&
-        self.fats == other.fats
-    }
-}
-
 
 fn main() {
-    println!("Hello, world!");
+    let args = CLI::parse();
 }
 
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use types::{Meal, Macros, DietPlan};
 
     #[test]
     fn test_diet_total_calc() {
