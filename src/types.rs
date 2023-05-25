@@ -10,8 +10,8 @@ impl<'a> DietPlan<'a> {
         DietPlan {
             meals: Vec::new(),
             target:  Macros {
-                protein: protein,
-                carbs: carbs,
+                protein,
+                carbs,
                 fats
             }
         }
