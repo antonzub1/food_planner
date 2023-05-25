@@ -11,17 +11,29 @@ struct CLI {
 
 #[derive(Debug, Subcommand)]
 enum Commands {
-    #[command(arg_required_else_help = true)]
-    Add(AddArgs),
+    #[command(arg_required_else_help = true, about = "Save a meal and it's macros as a reference")]
+    Save {
+        #[arg(short, long, help = "Name of the meal")]
+        name: Option<String>,
+        #[arg(short, long, help = "Amount of protein in 100g")]
+        protein: Option<f32>,
+        #[arg(short, long, help = "Amount of carbs in 100g")]
+        carbs: Option<f32>,
+        #[arg(short, long, help = "Amount of fats in 100g")]
+        fats: Option<f32>,
+    },
+    #[command(arg_required_else_help = true, about = "Add a meal to the ration. Must be added beforehand with 'save' command")]
+    Track {
+        #[arg(short, long, help = "Name of the meal to add to daily ration.")]
+        name: Option<String>,
+        #[arg(short, long, help = "Amount of the meal consumed")]
+        amount: Option<f32>,
+        #[arg(short, long, help = "Date of consumption. Optional. Falls back to current day if not provided")]
+        date: Option<String>,
+    }
 }
 
 
-#[derive(Args, Debug)]
-#[command(args_conflicts_with_subcommands = true)]
-struct AddArgs {
-    #[arg(short, long)]
-     meal: Option<String>
-}
 
 fn main() {
     let args = CLI::parse();
