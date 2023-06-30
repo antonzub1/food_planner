@@ -1,6 +1,6 @@
 mod types;
 
-use clap::{Args, Parser, Subcommand};
+use clap::{Parser, Subcommand};
 
 
 #[derive(Debug, Parser)]
@@ -12,7 +12,7 @@ struct CLI {
 #[derive(Debug, Subcommand)]
 enum Commands {
     #[command(arg_required_else_help = true, about = "Save a meal and it's macros as a reference")]
-    Save {
+    Add {
         #[arg(short, long, help = "Name of the meal")]
         name: Option<String>,
         #[arg(short, long, help = "Amount of protein in 100g")]
@@ -22,7 +22,7 @@ enum Commands {
         #[arg(short, long, help = "Amount of fats in 100g")]
         fats: Option<f32>,
     },
-    #[command(arg_required_else_help = true, about = "Add a meal to the ration. Must be added beforehand with 'save' command")]
+    #[command(arg_required_else_help = true, about = "Add a meal to the ration. Must be added beforehand with 'add' command")]
     Track {
         #[arg(short, long, help = "Name of the meal to add to daily ration.")]
         name: Option<String>,
@@ -71,8 +71,8 @@ mod tests {
                 fats: 7.4
             }
         };
-        diet.add(&oatmeal);
-        diet.add(&turkey);
+        diet.add(oatmeal);
+        diet.add(turkey);
         assert!(diet.meals.len() == 2);
         assert!(diet.total() == expected);
     }
