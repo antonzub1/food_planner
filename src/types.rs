@@ -1,12 +1,16 @@
-pub struct DietPlan<'a> {
+use serde_derive::{Serialize, Deserialize};
+
+
+#[derive(Default, Serialize, Deserialize)]
+pub struct DietPlan {
     pub target: Macros,
-    pub meals: Vec<&'a Meal>
+    pub meals: Vec<Meal>
 
 }
 
 
-impl<'a> DietPlan<'a> {
-    pub fn new(protein: f32, carbs: f32, fats: f32) -> DietPlan<'a> {
+impl DietPlan {
+    pub fn new(protein: f32, carbs: f32, fats: f32) -> DietPlan {
         DietPlan {
             meals: Vec::new(),
             target:  Macros {
@@ -25,12 +29,12 @@ impl<'a> DietPlan<'a> {
         result
     }
 
-    pub fn add(&mut self, meal: &'a Meal) {
+    pub fn add(&mut self, meal: Meal) {
         self.meals.push(meal);
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct Meal {
     pub name: String,
     pub macros: Macros,
@@ -54,7 +58,7 @@ impl Meal {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct Macros {
     pub protein: f32,
     pub carbs: f32,
